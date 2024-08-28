@@ -1,4 +1,4 @@
-import { LAST_CHANGED, LAST_UPDATED, SECONDARY_INFO_VALUES, UNAVAILABLE_STATES } from './lib/constants';
+import { SECONDARY_INFO_VALUES, UNAVAILABLE_STATES } from './lib/constants';
 
 export const isObject = (obj) => typeof obj === 'object' && !Array.isArray(obj) && !!obj;
 
@@ -6,10 +6,7 @@ export const isUnavailable = (stateObj) => !stateObj || UNAVAILABLE_STATES.inclu
 
 export const hideUnavailable = (stateObj, config) =>
     config.hide_unavailable &&
-    (isUnavailable(stateObj) ||
-        (config.attribute &&
-            ![LAST_CHANGED, LAST_UPDATED].includes(config.attribute) &&
-            stateObj.attributes[config.attribute] === undefined));
+    (isUnavailable(stateObj) || (config.attribute && stateObj.attributes[config.attribute] === undefined));
 
 export const hideIf = (stateObj, config) => {
     if (hideUnavailable(stateObj, config)) {
@@ -55,4 +52,10 @@ export const hasConfigOrEntitiesChanged = (node, changedProps) => {
         return node.entityIds.some((entity) => oldHass.states[entity] !== node._hass.states[entity]);
     }
     return false;
+};
+
+export const getHideIfStateObj = (hass, stateObj, config) => {
+    if (!hass || !config.hide_if || !config.hide_if.entity) return stateObj;
+    const hideObj = hass.states[config.hide_if.entity];
+    return hideObj ? hideObj : stateObj;
 };

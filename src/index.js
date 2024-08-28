@@ -3,11 +3,18 @@ import { handleClick } from 'custom-card-helpers';
 
 import { LAST_CHANGED, LAST_UPDATED, TIMESTAMP_FORMATS } from './lib/constants';
 import { checkEntity, entityName, entityStateDisplay, entityStyles } from './entity';
-import { getEntityIds, hasConfigOrEntitiesChanged, hasGenericSecondaryInfo, hideIf, isObject } from './util';
+import {
+    getEntityIds,
+    getHideIfStateObj,
+    hasConfigOrEntitiesChanged,
+    hasGenericSecondaryInfo,
+    hideIf,
+    isObject,
+} from './util';
 import { style } from './styles';
 
 console.info(
-    '%c MULTIPLE-ENTITY-ROW %c 4.5.1 ',
+    '%c MULTIPLE-ENTITY-ROW %c 4.4.1 ',
     'color: cyan; background: black; font-weight: bold;',
     'color: darkblue; background: white; font-weight: bold;'
 );
@@ -84,7 +91,7 @@ class MultipleEntityRow extends LitElement {
         if (
             !this.config.secondary_info ||
             hasGenericSecondaryInfo(this.config.secondary_info) ||
-            hideIf(this.info, this.config.secondary_info)
+            hideIf(getHideIfStateObj(this._hass, this.info, this.config.secondary_info), this.config.secondary_info)
         ) {
             return null;
         }
@@ -106,13 +113,7 @@ class MultipleEntityRow extends LitElement {
     }
 
     renderEntity(stateObj, config) {
-        if (!stateObj || hideIf(stateObj, config)) {
-            if (config.default) {
-                return html`<div class="entity" style="${entityStyles(config)}">
-                    <span>${config.name}</span>
-                    <div>${config.default}</div>
-                </div>`;
-            }
+        if (!stateObj || hideIf(getHideIfStateObj(this._hass, stateObj, config), config)) {
             return null;
         }
         const onClick = this.clickHandler(stateObj.entity_id, config.tap_action);
@@ -134,9 +135,7 @@ class MultipleEntityRow extends LitElement {
             ></ha-relative-time>`;
         }
         if (config.format && TIMESTAMP_FORMATS.includes(config.format)) {
-            const value = config.attribute
-                ? stateObj.attributes[config.attribute] ?? stateObj[config.attribute]
-                : stateObj.state;
+            const value = config.attribute ? stateObj.attributes[config.attribute] : stateObj.state;
             const timestamp = new Date(value);
             if (!(timestamp instanceof Date) || isNaN(timestamp.getTime())) {
                 return value;
@@ -154,7 +153,6 @@ class MultipleEntityRow extends LitElement {
     renderIcon(stateObj, config) {
         return html`<state-badge
             class="icon-small"
-            .hass=${this._hass}
             .stateObj="${stateObj}"
             .overrideIcon="${config.icon === true ? stateObj.attributes.icon || null : config.icon}"
             .stateColor="${config.state_color}"
