@@ -18,7 +18,7 @@ to your `<config>/www/` folder and add the following to the `configuration.yaml`
 ```yaml
 lovelace:
   resources:
-    - url: /local/multiple-entity-row.js?v=4.5.1
+    - url: /local/multiple-entity-row.js?v=4.4.1
       type: module
 ```
 
@@ -30,7 +30,8 @@ lovelace:
       type: module
 ```
 
-The above configuration can be managed in the Configuration -> Dashboards -> Resources panel when not using YAML.
+The above configuration can be managed directly in the Configuration -> Lovelace Dashboards -> Resources panel when not using YAML mode,
+or added by clicking the "Add to lovelace" button on the HACS dashboard after installing the plugin.
 
 ## Configuration
 
@@ -79,7 +80,6 @@ attribute value instead of the state value. `icon` lets you display an icon inst
 | toggle           | bool        | `false`                     | Display a toggle if supported by domain                            |
 | icon             | string/bool | `false`                     | Display default or custom icon instead of state or attribute value |
 | state_color      | bool        | `false`                     | Enable colored icon when entity is active                          |
-| default          | string      |                             | Display this value if the entity does not exist or should not be shown |
 | hide_unavailable | bool        | `false`                     | Hide entity if unavailable or not found                            |
 | hide_if          | object/any  | _[Hiding](#hiding)_         | Hide entity if its value matches specified value or criteria       |
 | styles           | object      |                             | Add custom CSS styles to the entity element                        |
@@ -133,35 +133,34 @@ for more detailed descriptions and examples.
 
 The `format` option supports the following values:
 
-| Value                 | Type        | Description                                                      |
-|-----------------------| ----------- |------------------------------------------------------------------|
-| relative              | `timestamp` | Convert value to relative time (`5 minutes ago`)                 |
-| total                 | `timestamp` | Convert value to relative time (`5 minutes`)                     |
-| date                  | `timestamp` | Convert timestamp value to date                                  |
-| time                  | `timestamp` | Convert timestamp value to time                                  |
-| datetime              | `timestamp` | Convert timestamp value to date and time                         |
-| brightness            | `number`    | Convert brightness value to percentage                           |
-| duration              | `number`    | Convert number of seconds to duration (`5:38:50`)                |
-| duration-m            | `number`    | Convert number of milliseconds to duration (`5:38:50`)           |
-| duration-h            | `number`    | Convert number of hours to duration (`5:38:50`)                  |
-| invert                | `number`    | Convert number from positive to negative or vice versa           |
-| kilo                  | `number`    | Divide number value by 1000 (ex. `1500 W` -> `1.5 kW`)           |
-| position              | `number`    | Reverses a position percentage (ex. `70%` open -> `30%` closed)  |
-| precision<0-9>        | `number`    | Set decimal precision of number value (`precision3` -> `18.123`) |
-| celsius_to_fahrenheit | `number`    | Converts a Celsius temperature to its Fahrenheit equivalent      |
-| fahrenheit_to_celsius | `number`    | Converts a Fahrenheit temperature to its Celsius equivalent      |
+| Value          | Type        | Description                                                      |
+| -------------- | ----------- | ---------------------------------------------------------------- |
+| relative       | `timestamp` | Convert value to relative time (`5 minutes ago`)                 |
+| total          | `timestamp` | Convert value to relative time (`5 minutes`)                     |
+| date           | `timestamp` | Convert timestamp value to date                                  |
+| time           | `timestamp` | Convert timestamp value to time                                  |
+| datetime       | `timestamp` | Convert timestamp value to date and time                         |
+| brightness     | `number`    | Convert brightness value to percentage                           |
+| duration       | `number`    | Convert number of seconds to duration (`5:38:50`)                |
+| duration-m     | `number`    | Convert number of milliseconds to duration (`5:38:50`)           |
+| invert         | `number`    | Convert number from positive to negative or vice versa           |
+| kilo           | `number`    | Divide number value by 1000 (ex. `1500 W` -> `1.5 kW`)           |
+| position       | `number`    | Reverses a position percentage (ex. `70%` open -> `30%` closed)  |
+| precision<0-9> | `number`    | Set decimal precision of number value (`precision3` -> `18.123`) |
 
 ### Hiding
 
-The `hide_if` option can be used to hide an entity if its state or attribute value matches the specified criteria.
+The `hide_if` option can be used to hide an entity if an entity's state or attribute value matches the specified criteria.
 It can be used directly with a string, number or boolean value (i.e. `hide_if: 'off'`), as a list with several values,
 or as an object with one or more of the options listed below.
 
-| Name    | Type     | Description                                                     |
-| ------- | -------- | --------------------------------------------------------------- |
-| above   | number   | Hidden if entity _number_ value is above the specified value    |
-| below   | number   | Hidden if entity _number_ value is below the specified value    |
-| value   | list/any | Hidden if value matches specified value or any value in a list  |
+| Name      | Type     | Description                                                            |
+| --------- | -------- | ---------------------------------------------------------------------- |
+| above     | number   | Hidden if entity _number_ value is above the specified value           |
+| below     | number   | Hidden if entity _number_ value is below the specified value           |
+| value     | list/any | Hidden if value matches specified value or any value in a list         |
+| entity    | string   | Use this entity's state/attribute when evaluating criteria for hiding  |
+| attribute | string   | Use this attribute's value when evaluating criteria for hiding         |
 
 ## Examples
 
